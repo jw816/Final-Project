@@ -16,6 +16,7 @@
 		CE03CB9F1830143700A26CE7 /* holiday_card_3.jpg in Resources */ = {isa = PBXBuildFile; fileRef = CE03CB9E1830143700A26CE7 /* holiday_card_3.jpg */; };
 		CE03CBA31830166D00A26CE7 /* SelectBackgroundViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE03CBA21830166D00A26CE7 /* SelectBackgroundViewController.m */; };
 		CE03CBA6183016E500A26CE7 /* BackgroundCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CE03CBA5183016E500A26CE7 /* BackgroundCell.m */; };
+		CE860AA118342E960053DCDA /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE860AA018342E960053DCDA /* FacebookSDK.framework */; };
 		CEA028EF1831C106000E1C01 /* PictureViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA028EE1831C106000E1C01 /* PictureViewController.m */; };
 		CEA028F21831CA2A000E1C01 /* PictureCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA028F11831CA2A000E1C01 /* PictureCell.m */; };
 		CEA028F91831CECB000E1C01 /* person1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = CEA028F51831CECB000E1C01 /* person1.jpg */; };
@@ -64,6 +65,7 @@
 		CE03CBA21830166D00A26CE7 /* SelectBackgroundViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectBackgroundViewController.m; sourceTree = "<group>"; };
 		CE03CBA4183016E500A26CE7 /* BackgroundCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BackgroundCell.h; sourceTree = "<group>"; };
 		CE03CBA5183016E500A26CE7 /* BackgroundCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BackgroundCell.m; sourceTree = "<group>"; };
+		CE860AA018342E960053DCDA /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookSDK.framework; path = ../FacebookSDK/FacebookSDK.framework; sourceTree = "<group>"; };
 		CEA028ED1831C106000E1C01 /* PictureViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PictureViewController.h; sourceTree = "<group>"; };
 		CEA028EE1831C106000E1C01 /* PictureViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PictureViewController.m; sourceTree = "<group>"; };
 		CEA028F01831CA2A000E1C01 /* PictureCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PictureCell.h; sourceTree = "<group>"; };
@@ -102,6 +104,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE860AA118342E960053DCDA /* FacebookSDK.framework in Frameworks */,
 				CE03CB9C182FF6A900A26CE7 /* MessageUI.framework in Frameworks */,
 				CE03CB8D182F1D9A00A26CE7 /* Social.framework in Frameworks */,
 				CEC46A0B182D8EF800B6A377 /* CoreGraphics.framework in Frameworks */,
@@ -208,6 +211,7 @@
 		CEC46A07182D8EF800B6A377 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CE860AA018342E960053DCDA /* FacebookSDK.framework */,
 				CE03CB9B182FF6A900A26CE7 /* MessageUI.framework */,
 				CE03CB8C182F1D9A00A26CE7 /* Social.framework */,
 				CEC46A08182D8EF800B6A377 /* Foundation.framework */,
@@ -524,6 +528,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/user/Documents/FacebookSDK,
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Final_Project/Final_Project-Prefix.pch";
 				INFOPLIST_FILE = "Final_Project/Final_Project-Info.plist";
@@ -537,6 +545,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/user/Documents/FacebookSDK,
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Final_Project/Final_Project-Prefix.pch";
 				INFOPLIST_FILE = "Final_Project/Final_Project-Info.plist";

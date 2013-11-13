@@ -83,7 +83,52 @@
     if([buttonTitle isEqualToString:@"Facebook"]){
         UINavigationController * navController = [self.storyboard instantiateViewControllerWithIdentifier:@"FindPictures"];
         //navController set = UIInterfaceOrientationMaskPortrait;
-        //PictureViewController * pictureViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"PictureViewController"];
+        //PictureViewController * pictureViewController = [navController.childViewControllers objectAtIndex:0];
+        
+        //get photos from facebook
+        NSArray *permissions =
+        [NSArray arrayWithObjects:@"email", nil];
+        [FBSession openActiveSessionWithReadPermissions:permissions allowLoginUI:YES completionHandler:
+         ^(FBSession *session, FBSessionState status, NSError *error) {
+             if (error == nil) {
+                 NSLog(@"success");
+             }
+             else{
+                 NSLog(@"%@",error);
+             }
+         }];
+        
+        if (FBSession.activeSession.isOpen) {
+            [[FBRequest requestForMe] startWithCompletionHandler:
+             ^(FBRequestConnection *connection,
+               NSDictionary<FBGraphUser> *user,
+               NSError *error) {
+                 if (!error) {
+                     NSLog(@"test");
+                     
+                     NSURL * albumURL = [NSURL URLWithString:[NSString stringWithFormat: @"https://graph.facebook.com/%@?fields=albums", user.id]];
+                     NSLog(@"%@", [albumURL absoluteString]);
+                     
+                     NSData * data = [NSData dataWithContentsOfURL:albumURL];
+                     NSDictionary * jsonDict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
+                     NSLog(@"%@", data);
+                     NSLog(@"%@",jsonDict);
+                     
+                     NSDictionary *albumDict = [jsonDict objectForKey:@"albums"];
+                     NSMutableArray * photos;
+                     
+                     for (id key in albumDict) {
+                         [photos addObject:[albumDict objectForKey:key]];
+                     }
+                     UINavigationController * navController = [self.storyboard instantiateViewControllerWithIdentifier:@"FindPictures"];
+                     PictureViewController * pictureViewController = [navController.childViewControllers objectAtIndex:0];
+                     NSArray * imageArray = [[NSArray alloc]initWithArray:photos];
+                     pictureViewController.images = imageArray;
+                     [self presentViewController:navController animated:YES completion:nil];
+                 }
+             }];
+        }
+        
         [self presentViewController:navController animated:YES completion:nil];
     }
     if([buttonTitle isEqualToString:@"Take New"]){

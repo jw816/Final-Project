@@ -29,6 +29,8 @@
 	// Do any additional setup after loading the view.
     self.imageView.contentMode = UIViewContentModeScaleAspectFit;
     self.imageView.image = self.cardImage;
+    
+    //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(accountChanged) name:ACAccountStoreDidChangeNotification object:nil];
 }
 
 - (void)didReceiveMemoryWarning
@@ -82,53 +84,60 @@
     }
     if([buttonTitle isEqualToString:@"Facebook"]){
         UINavigationController * navController = [self.storyboard instantiateViewControllerWithIdentifier:@"FindPictures"];
-        //navController set = UIInterfaceOrientationMaskPortrait;
-        //PictureViewController * pictureViewController = [navController.childViewControllers objectAtIndex:0];
         
         //get photos from facebook
-        NSArray *permissions =
-        [NSArray arrayWithObjects:@"email", nil];
-        [FBSession openActiveSessionWithReadPermissions:permissions allowLoginUI:YES completionHandler:
-         ^(FBSession *session, FBSessionState status, NSError *error) {
-             if (error == nil) {
-                 NSLog(@"success");
-             }
-             else{
-                 NSLog(@"%@",error);
-             }
-         }];
+        ACAccountStore *accountStore = [[ACAccountStore alloc] init];
         
-        if (FBSession.activeSession.isOpen) {
-            [[FBRequest requestForMe] startWithCompletionHandler:
-             ^(FBRequestConnection *connection,
-               NSDictionary<FBGraphUser> *user,
-               NSError *error) {
-                 if (!error) {
-                     NSLog(@"test");
-                     
-                     NSURL * albumURL = [NSURL URLWithString:[NSString stringWithFormat: @"https://graph.facebook.com/%@?fields=albums", user.id]];
-                     NSLog(@"%@", [albumURL absoluteString]);
-                     
-                     NSData * data = [NSData dataWithContentsOfURL:albumURL];
-                     NSDictionary * jsonDict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
-                     NSLog(@"%@", data);
-                     NSLog(@"%@",jsonDict);
-                     
-                     NSDictionary *albumDict = [jsonDict objectForKey:@"albums"];
-                     NSMutableArray * photos;
-                     
-                     for (id key in albumDict) {
-                         [photos addObject:[albumDict objectForKey:key]];
-                     }
-                     UINavigationController * navController = [self.storyboard instantiateViewControllerWithIdentifier:@"FindPictures"];
-                     PictureViewController * pictureViewController = [navController.childViewControllers objectAtIndex:0];
-                     NSArray * imageArray = [[NSArray alloc]initWithArray:photos];
-                     pictureViewController.images = imageArray;
-                     [self presentViewController:navController animated:YES completion:nil];
-                 }
-             }];
-        }
+        ACAccountType *facebookAccountType = [accountStore
+                                              accountTypeWithAccountTypeIdentifier:
+                                              ACAccountTypeIdentifierFacebook];
+        NSDictionary *options = @{ACFacebookAppIdKey: @"608089375896907",
+                                  ACFacebookPermissionsKey: @[@"email"]
+                                  };
         
+        [accountStore requestAccessToAccountsWithType:facebookAccountType options:options completion:^(BOOL granted, NSError *e) {
+            if (granted) {
+                NSLog(@"granted");
+            }
+            else
+            {
+                // Handle Failure
+                NSLog(@"%@",e);
+            }
+        }];
+        
+        //get albums
+        NSDictionary *options2 = @{
+                                   ACFacebookAppIdKey: @"608089375896907",
+                                   ACFacebookPermissionsKey: @[@"user_photos",
+                                                               @"friends_photos"]
+                                   };
+        
+        [accountStore requestAccessToAccountsWithType:facebookAccountType options:options2 completion:^(BOOL granted, NSError *e) {
+            NSArray *accounts = [accountStore
+                                 accountsWithAccountType:facebookAccountType];
+            self.facebookAccount = [accounts lastObject];
+            [accountStore renewCredentialsForAccount:self.facebookAccount completion:^(ACAccountCredentialRenewResult renewResult, NSError *error){
+                
+            }];
+            NSString *accessToken = [NSString stringWithFormat:@"%@",self.facebookAccount.credential.oauthToken];
+            NSDictionary *parameters = @{@"access_token": accessToken};
+            NSLog(@"%@",accessToken);
+            
+            NSURL *albumURL = [NSURL URLWithString:@"https://graph.facebook.com/me?fields=albums"];
+            SLRequest *albumRequest = [SLRequest requestForServiceType:SLServiceTypeFacebook requestMethod:SLRequestMethodGET URL:albumURL parameters:parameters];
+            
+            albumRequest.account = self.facebookAccount;
+            [albumRequest performRequestWithHandler:^(NSData *responseData,
+                                                      NSHTTPURLResponse *urlResponse, NSError *error)
+            {
+                NSDictionary * jsonDict = [NSJSONSerialization JSONObjectWithData:responseData options:kNilOptions error:&error];
+                NSLog(@"%@", jsonDict);
+            }];
+            //get cover photos
+            //[albumRequest
+        
+        }];
         [self presentViewController:navController animated:YES completion:nil];
     }
     if([buttonTitle isEqualToString:@"Take New"]){

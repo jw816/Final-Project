@@ -11,9 +11,11 @@
 #import <Social/Social.h>
 #import <Accounts/Accounts.h>
 #import <FacebookSDK/FacebookSDK.h>
+
 @interface CardViewController : UIViewController <UIActionSheetDelegate>
 @property (strong, nonatomic) IBOutlet UIImageView *imageView;
 @property (strong, nonatomic) UIImage * cardImage;
+@property (strong, nonatomic) ACAccount * facebookAccount;
 - (IBAction)backButton:(id)sender;
 - (IBAction)addPhoto:(id)sender;
 
